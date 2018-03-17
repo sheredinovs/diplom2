@@ -34,6 +34,7 @@ import com.applozic.mobicomkit.feed.TopicDetail;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicConversationCreateTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.stego.SecurityUtils;
 import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 
@@ -333,6 +334,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if(SecurityUtils.isStegoModOff(this)){
+            if(!(menu.findItem(R.id.action_disable) == null)){
+                menu.findItem(R.id.action_disable).setVisible(false);
+            }
+        }
+        if(SecurityUtils.isStegoModOn(this)){
+            if(!(menu.findItem(R.id.action_enable_stego) == null)){
+                menu.findItem(R.id.action_enable_stego).setVisible(false);
+            }
+        }
+        super.onPrepareOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -340,9 +357,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
+        if (id == R.id.action_enable_stego) {
+            SecurityUtils.setEnableStegoMode(this);
             return true;
-        }*/
+        }
+        if (id == R.id.action_disable) {
+            SecurityUtils.disableStegoMode(this);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

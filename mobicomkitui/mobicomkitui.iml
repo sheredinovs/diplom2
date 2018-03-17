@@ -113,9 +113,9 @@
     <orderEntry type="library" name="com.android.support:support-annotations:27.0.2@jar" level="project" />
     <orderEntry type="library" name="com.android.support:design-27.0.2" level="project" />
     <orderEntry type="library" name="com.google.firebase:firebase-iid-11.8.0" level="project" />
-    <orderEntry type="library" name="com.google.firebase:firebase-iid-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.theartofdev.edmodo:android-image-cropper-2.5.1" level="project" />
     <orderEntry type="library" name="de.hdodenhof:circleimageview-2.0.0" level="project" />
+    <orderEntry type="library" name="com.google.firebase:firebase-iid-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-base-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.android.support:transition-27.0.2" level="project" />
     <orderEntry type="library" name="com.android.support:recyclerview-v7-27.0.2" level="project" />
@@ -123,6 +123,8 @@
     <orderEntry type="library" name="com.google.android.gms:play-services-maps-license-11.8.0" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:disklrucache:4.5.0@jar" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:glide-4.5.0" level="project" />
+    <orderEntry type="library" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
+    <orderEntry type="library" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
     <orderEntry type="library" name="android.arch.lifecycle:runtime-1.0.3" level="project" />
     <orderEntry type="library" name="com.android.support:support-vector-drawable-27.0.2" level="project" />
     <orderEntry type="library" name="org.eclipse.paho:org.eclipse.paho.android.service:1.1.1@jar" level="project" />
@@ -149,8 +151,9 @@
     <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.5.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-media-compat-27.0.2" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-base-11.8.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-v4-27.0.2" level="project" />
+    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.6@jar" level="project" />
     <orderEntry type="library" name="com.google.android.gms:play-services-tasks-license-11.8.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-v4-27.0.2" level="project" />
     <orderEntry type="module" module-name="mobicomkit" />
     <orderEntry type="module" module-name="mobicommons" />
   </component>

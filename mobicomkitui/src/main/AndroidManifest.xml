@@ -2,5 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.applozic.mobicomkit.uiwidgets">
 
+    <application>
+        <activity
+            android:name=".stego.StegoActivity"
+            android:label="@string/title_activity_stego"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
 
 </manifest>

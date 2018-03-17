@@ -108,6 +108,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.conversation.UIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.ApplozicContextSpinnerAdapter;
@@ -118,6 +119,9 @@ import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
+import com.applozic.mobicomkit.uiwidgets.stego.SecurityUtils;
+import com.applozic.mobicomkit.uiwidgets.stego.StegoProcessor;
+import com.applozic.mobicomkit.uiwidgets.stego.StegoValidator;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -705,6 +709,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                           @Override
                                           public void onClick(View view) {
                                               emoticonsFrameLayout.setVisibility(View.GONE);
+                                              StegoValidator validator = new StegoValidator();
+                                              String message = messageEditText.getText().toString().trim();
+                                              if(validator.isValidToCompute(message)){
+                                                  new StegoProcessor(message).preprocess(getContext());
+                                                  Toast.makeText(getContext(), "dgdsgdggs", Toast.LENGTH_LONG).show();
+                                                  messageEditText.setText(null);
+                                                 // getActivity().finish();
+                                              }
+
+
+
                                               sendMessage();
                                               if (contact != null && !contact.isBlocked() || channel != null) {
                                                   handleSendAndRecordButtonView(false);

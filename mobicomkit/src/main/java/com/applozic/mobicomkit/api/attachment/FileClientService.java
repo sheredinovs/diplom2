@@ -456,6 +456,8 @@ public class FileClientService extends MobiComKitClientService {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
+
+
             if (in != null && out != null) {
                 try {
                     out.flush();

@@ -56,7 +56,9 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.apache.commons:commons-lang3:3.6'
     compile project(':mobicomkitui') //Note: use this for customization
     //compile 'com.applozic.communication.uiwidget:mobicomkitui:5.6.4'
     compile 'com.android.support:support-v4:27.0.2'
