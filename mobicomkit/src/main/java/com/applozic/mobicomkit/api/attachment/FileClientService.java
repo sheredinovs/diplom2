@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
@@ -18,7 +19,9 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.feed.TopicDetail;
-import com.applozic.mobicomkit.listners.MediaUploadProgressHandler;
+import com.applozic.mobicomkit.stego.Cipher;
+import com.applozic.mobicomkit.stego.ImageHelper;
+import com.applozic.mobicomkit.stego.StegoProcessor;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -37,6 +40,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by devashish on 26/12/14.
@@ -442,7 +446,7 @@ public class FileClientService extends MobiComKitClientService {
         return null;
     }
 
-    public void writeFile(Uri uri, File file) {
+    public void writeFile(Uri uri, File file, boolean isStegoOn){
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -460,15 +464,65 @@ public class FileClientService extends MobiComKitClientService {
 
             if (in != null && out != null) {
                 try {
+                    if(isStegoOn){
+                        insertMessage(file, "hello");
+                    }
                     out.flush();
                     in.close();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
         }
     }
+
+    private void insertMessage(File file, String message) throws Exception {
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+        List<double[][]> blocks = new ImageHelper().convertToArray(bitmap);
+        List<double[][]> blueMatrix = new ImageHelper().getBlocks(blocks.get(2));
+        Cipher cipher = new Cipher();
+        char[] mess = new StegoProcessor(message).prepareMessage().toCharArray();
+        List<double[][]> blokcWithCoeff = new ArrayList<>();
+
+        for(int i = 0; i < mess.length; i++){
+            blokcWithCoeff.add(cipher.smartInsert(blueMatrix.get(i), (mess[i])));
+        }
+
+
+        double[][] finalBlue = setBlocks(blocks.get(2), blokcWithCoeff);
+        Bitmap newBitmap = new ImageHelper().createImage(blocks.get(0), blocks.get(1), finalBlue, bitmap);
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(file);
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+
+    }
+
+
+
+
+    public static double[][] setBlocks(double[][] array, List<double[][]> list) {
+        int rows = array.length / 8;
+        int cols = array[0].length / 8;
+        int indBlock = 0;
+
+        for (int indRow = 0; indRow < rows; indRow++)
+            for (int indCol = 0; indCol < cols; indCol++) {
+                double[][] tempBlock = list.get(indBlock);
+                for (int i = 0; i < 8; i++)
+                    System.arraycopy(tempBlock[i], 0, array[indRow * 8 + i], indCol * 8 + 0, 8);
+                indBlock++;
+            }
+        return array;
+    }
+
 
     public String getThumbnailUrl(String thumbnailUrl) {
         return (ApplozicClient.getInstance(context).isStorageServiceEnabled() ?

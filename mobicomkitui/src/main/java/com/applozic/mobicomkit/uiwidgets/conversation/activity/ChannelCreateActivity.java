@@ -418,7 +418,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
                 if (fileUri != null) {
                     String filePath = file.getAbsolutePath();
                     if (isSaveFile) {
-                        fileClientService.writeFile(fileUri, file);
+                        fileClientService.writeFile(fileUri, file, false);
                     }
                     groupIconImageLink = fileClientService.uploadProfileImage(filePath);
                 }

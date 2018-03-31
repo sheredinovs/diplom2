@@ -497,7 +497,7 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
                     }
                     String fileNameToWrite = timeStamp + "." + fileFormat;
                     File mediaFile = FileClientService.getFilePath(fileNameToWrite, context, mimeType);
-                    fileClientService.writeFile(uri, mediaFile);
+                    fileClientService.writeFile(uri, mediaFile, false);
                     return mediaFile;
                 }
             }

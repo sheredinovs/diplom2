@@ -27,6 +27,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
+import com.applozic.mobicomkit.uiwidgets.stego.SecurityUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FilePathFinder;
 import com.applozic.mobicommons.file.FileUtils;
@@ -255,6 +256,8 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+        Toast.makeText(this, "err", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -293,7 +296,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            fileClientService.writeFile(uri, file);
+            fileClientService.writeFile(uri, file, SecurityUtils.isStegoModOn(context));
             return true;
         }
 

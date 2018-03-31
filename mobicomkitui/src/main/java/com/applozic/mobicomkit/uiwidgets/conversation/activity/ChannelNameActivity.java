@@ -218,7 +218,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     applozicGroupProfileIcon.setImageDrawable(null); // <--- added to force redraw of ImageView
                     applozicGroupProfileIcon.setImageURI(imageChangeUri);
                     profilePhotoFile = FileClientService.getFilePath(imageFileName, this, "image/jpeg");
-                    fileClientService.writeFile(imageChangeUri, profilePhotoFile);
+                    fileClientService.writeFile(imageChangeUri, profilePhotoFile, false);
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Utils.printLog(this,ChannelNameActivity.class.getName(),this.getString(R.string.applozic_Cropping_failed)+result.getError());

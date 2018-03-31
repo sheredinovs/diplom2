@@ -406,7 +406,7 @@ public class ProfileFragment extends Fragment {
                 String filePath = null;
                 if (fileUri != null) {
                     if (isSaveFile) {
-                        fileClientService.writeFile(fileUri, file);
+                        fileClientService.writeFile(fileUri, file, false);
                     }
                     response = fileClientService.uploadProfileImage(file.getAbsolutePath());
                     filePath = file.getAbsolutePath();

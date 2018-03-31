@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -122,6 +124,7 @@ import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.stego.SecurityUtils;
 import com.applozic.mobicomkit.uiwidgets.stego.StegoProcessor;
 import com.applozic.mobicomkit.uiwidgets.stego.StegoValidator;
+import com.applozic.mobicomkit.uiwidgets.stego.security.db.SecureDbHelper;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -711,20 +714,53 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                               emoticonsFrameLayout.setVisibility(View.GONE);
                                               StegoValidator validator = new StegoValidator();
                                               String message = messageEditText.getText().toString().trim();
-                                              if(validator.isValidToCompute(message)){
+                                              SecureDbHelper secureDbHelper = new SecureDbHelper(getContext());
+                                              SQLiteDatabase database = secureDbHelper.getWritableDatabase();
+                                              if(SecurityUtils.isStegoModOn(getContext())) {
+                                                  if (!validator.isValidToCompute(message)) {
+                                                      Toast.makeText(getContext(), "too long text. maximum length is 375 characters", Toast.LENGTH_LONG).show();
+                                                      return;
+                                                  }
                                                   new StegoProcessor(message).preprocess(getContext());
-                                                  Toast.makeText(getContext(), "dgdsgdggs", Toast.LENGTH_LONG).show();
+                                                  //Toast.makeText(getContext(), "Accepted", Toast.LENGTH_LONG).show();
+                                                  //getActivity().finish();
+                                                  ContentValues values = new ContentValues();
+                                                  values.put("message", messageEditText.getText().toString());
+                                                  values.put("is_my", true);
+                                                  values.put("cend_date", String.valueOf(new Date()));
+                                                  database.insert("schat", null, values);
+
+                                                  SQLiteDatabase db = secureDbHelper.getReadableDatabase();
+                                                  Cursor  cursor = db.rawQuery("select * from schat",null);
+
+                                                  List<String> arr = new ArrayList<>();
+                                                  if (cursor.moveToFirst()) {
+                                                      while (!cursor.isAfterLast()) {
+                                                          String name = cursor.getString(cursor.getColumnIndex("message"));
+
+                                                          arr.add(name);
+                                                          cursor.moveToNext();
+                                                      }
+                                                  }
+
+                                                  cursor.moveToPosition(0);
+                                                  String text = cursor.getString(1);
+                                                  Toast.makeText(getContext(),text, Toast.LENGTH_LONG).show();
+                                                  values.put("message", messageEditText.getText().toString());
+                                                  values.put("is_my", true);
+                                                  values.put("cend_date", String.valueOf(new Date()));
+                                                  database.insert("schat", null, values);
                                                   messageEditText.setText(null);
-                                                 // getActivity().finish();
+
                                               }
 
-
-
-                                              sendMessage();
-                                              if (contact != null && !contact.isBlocked() || channel != null) {
-                                                  handleSendAndRecordButtonView(false);
+                                              else {
+                                                  sendMessage();
+                                                  if (contact != null && !contact.isBlocked() || channel != null) {
+                                                      handleSendAndRecordButtonView(false);
+                                                  }
                                               }
-                                          }
+                                              }
                                       }
         );
 

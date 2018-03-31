@@ -1,13 +1,5 @@
-package com.applozic.mobicomkit.uiwidgets.stego;
+package com.applozic.mobicomkit.stego;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
-import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by kadyr on 10.03.2018.
@@ -20,12 +12,7 @@ public class StegoProcessor {
         this.message = message;
     }
 
-    public void preprocess(Context context){
-        Intent intentPick = new Intent(context, MobiComAttachmentSelectorActivity.class);
-        ((Activity)context).startActivityForResult(intentPick, MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT);
-    }
-
-    public String prepareMessage(String message){
+    public String prepareMessage(){
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < StegoValidator.REPEAT_COUNT; i++){
             builder.append("1");

@@ -1,8 +1,7 @@
-package com.applozic.mobicomkit.uiwidgets.stego;
+package com.applozic.mobicomkit.stego;
 
 import android.graphics.Bitmap;
 
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -15,13 +14,6 @@ public class StegoValidator {
     public static final int BLOCK_CONT_DATA =9;
     public static final int REPEAT_COUNT = 3;
 
-
-    public boolean isValidToCompute(String string){
-        if(StringUtils.isNotEmpty(string) && string.length() <= MAX_COUNT){
-            return true;
-        }
-        return false;
-    }
 
     public boolean isValidToSelect(Bitmap bitmap){
         List<double[][]> blocks = new ImageHelper().convertToArray(bitmap);
