@@ -1,13 +1,19 @@
 package com.applozic.mobicomkit.api.conversation;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
@@ -16,6 +22,7 @@ import com.applozic.mobicomkit.api.account.user.UserDetail;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.api.conversation.database.db.SecureDbHelper;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -25,6 +32,9 @@ import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeed;
 import com.applozic.mobicomkit.listners.MediaUploadProgressHandler;
+import com.applozic.mobicomkit.stego.ImageHelper;
+import com.applozic.mobicomkit.stego.StegoProcessor;
+import com.applozic.mobicomkit.stego.StegoValidator;
 import com.applozic.mobicomkit.sync.SyncUserDetailsResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -43,6 +53,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MobiComConversationService {
@@ -149,6 +160,27 @@ public class MobiComConversationService {
         } else if (contact != null) {
             isServerCallNotRequired = true;
         }
+
+        SecureDbHelper dbHelper = new SecureDbHelper(context);
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        database.enableWriteAheadLogging();
+        Cursor cursor = null;
+        StegoValidator validator = new StegoValidator();
+        StegoProcessor processor = new StegoProcessor("");
+        for(Message msg : cachedMessageList) {
+            if (msg.getFileMetas() != null) {
+                cursor = database.rawQuery("select * from schat where mkey = " + "\"" + msg.getKeyString()+ "\"" , null);
+                if (!(cursor.moveToFirst()) || cursor.getCount() ==0) {
+                    String url = msg.getFileMetas().getThumbnailUrl();
+                    Bitmap bitmap = ImageHelper.getBitmapFromURL(url);
+                    validator.isValidToSelect(bitmap);
+                    String message = processor.extractSecureMessage(bitmap);
+                    updateInternalDb(message, new Date(msg.getCreatedAtTime()));
+                }
+                cursor.close();
+            }
+        }
+
 
         if (isServerCallNotRequired && (!cachedMessageList.isEmpty() &&
                 (cachedMessageList.size() > 1 || wasServerCallDoneBefore(contact, channel, conversationId))
@@ -343,6 +375,16 @@ public class MobiComConversationService {
         MobiComUserPreference.getInstance(context).setLastSeenAtSyncTime(userDetailsResponse.getGeneratedAt());
     }
 
+    private void updateInternalDb(String message, Date createdDate){
+        SecureDbHelper secureDbHelper = new SecureDbHelper(context);
+        SQLiteDatabase database = secureDbHelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put("message", message);
+            values.put("is_my", false);
+            values.put("cend_date", String.valueOf(createdDate));
+            database.insert("schat", null, values);
+    }
 
     public Message[] getMessageListByKeyList(List<String> messageKeyList) {
         String response = messageClientService.getMessageByMessageKeys(messageKeyList);

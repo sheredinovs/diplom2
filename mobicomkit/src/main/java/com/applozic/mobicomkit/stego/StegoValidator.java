@@ -17,10 +17,10 @@ public class StegoValidator {
 
     public boolean isValidToSelect(Bitmap bitmap){
         List<double[][]> blocks = new ImageHelper().convertToArray(bitmap);
-        StringBuilder builder = new StringBuilder();
+        List<double[][]> blueMatrix = new ImageHelper().getBlocks(blocks.get(2));
         int count = 0;
         for(int i = 0; i< 2; i++){
-            if(new Cipher().compute(blocks.get(i)) == 1){
+            if(new Cipher().compute(blueMatrix.get(i)) == 1){
                 count++;
             }
         }

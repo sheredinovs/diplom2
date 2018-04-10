@@ -1,9 +1,11 @@
 package com.applozic.mobicomkit.stego;
 
 
-/**
- * Created by kadyr on 10.03.2018.
- */
+import android.graphics.Bitmap;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StegoProcessor {
     private String message;
@@ -39,4 +41,42 @@ public class StegoProcessor {
         }
         return builder.toString();
     }
+
+    public String extractSecureMessage(Bitmap bitmap){
+        double[][] blueMatrix = new ImageHelper().convertToArray(bitmap).get(2);
+        List<double[][]> blosks = new ImageHelper().getBlocks(blueMatrix);
+        blosks.remove(0);
+        blosks.remove(1);
+        blosks.remove(2);
+        Cipher cipher = new Cipher();
+        List<Byte> out = new ArrayList<>();
+        for (double[][] re : blosks) {
+            out.add(cipher.compute(re));
+        }
+        byte[] res = new byte[out.size()];
+        for(int i = 0; i < out.size(); i++) {
+            res[i] = out.get(i);
+        }
+
+        List<String> bla = new ArrayList<>();
+        for (int i = 0; i < res.length; i+=8) {
+            bla.add(Arrays.toString(Arrays.copyOfRange(res, i, i + 8)));
+        }
+        StringBuilder message = new StringBuilder();
+        for(String string : bla){
+            int charCode = Integer.parseInt(string, 2);
+            message.append(Character.toString((char) charCode));
+        }
+        return message.toString();
+    }
+
+    public int coungOfText(List<double[][]> blosks){
+        StringBuilder builder = new StringBuilder();
+        Cipher cipher = new Cipher();
+        for (int i = 0; i < 27; i++) {
+            builder.append(cipher.compute(blosks.get(i)));
+        }
+        return 0;
+    }
+
 }

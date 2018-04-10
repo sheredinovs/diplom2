@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.stego.security.db;
+package com.applozic.mobicomkit.api.conversation.database.db;
 
 
 import android.content.Context;
