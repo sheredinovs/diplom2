@@ -178,5 +178,6 @@
     <orderEntry type="module" module-name="mobicomkitui" />
     <orderEntry type="module" module-name="mobicomkit" />
     <orderEntry type="module" module-name="mobicommons" />
+    <orderEntry type="library" name="android-android-27" level="project" />
   </component>
 </module>

@@ -27,6 +27,7 @@
         android:protectionLevel="signature" />
 
     <application
+        android:largeHeap="true"
         android:name=".ApplozicSampleApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"

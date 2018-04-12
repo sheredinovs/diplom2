@@ -90,7 +90,8 @@ public class ImageHelper {
             for (int x = 0; x < newRedPart[0].length; x++) {
                 int color = Color.rgb(newRedPart[y][x], newGreenPart[y][x], newBluePart[y][x]);
                 paint.setColor(color);
-                canvas.drawPaint(paint);
+                //canvas.drawPaint(paint);
+                canvas.drawPoint(x, y, paint);
             }
         }
 
