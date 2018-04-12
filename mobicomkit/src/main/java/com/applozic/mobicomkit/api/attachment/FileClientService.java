@@ -493,6 +493,9 @@ public class FileClientService extends MobiComKitClientService {
         double[][] finalBlue = setBlocks(blocks.get(2), blokcWithCoeff);
         Bitmap newBitmap = new ImageHelper().createImage(blocks.get(0), blocks.get(1), finalBlue, bitmap);
 
+        // Debug
+        Log.d("IDebug", "FileClientService/insertMessage: Compare bitmaps = " + bitmap.sameAs(newBitmap));
+
         OutputStream os;
         try {
             os = new FileOutputStream(file);
@@ -517,8 +520,13 @@ public class FileClientService extends MobiComKitClientService {
             for (int indCol = 0; indCol < cols; indCol++) {
                 double[][] tempBlock = list.get(indBlock);
                 for (int i = 0; i < 8; i++)
-                    System.arraycopy(tempBlock[i], 0, array[indRow * 8 + i], indCol * 8 + 0, 8);
+                    //System.arraycopy(tempBlock[i], 0, array[indRow * 8 + i], indCol * 8 + 0, 8);
+                    for (int j = 0; j < 8; j++)
+                        array[indRow * 8 + i][indCol * 8 + j] = tempBlock[i][j];
                 indBlock++;
+
+                if (indBlock == list.size())
+                    return array;
             }
         return array;
     }
